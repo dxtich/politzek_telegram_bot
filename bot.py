@@ -39,6 +39,7 @@ def get_prisoners():
         response = requests.get(req_url)
     except requests.exceptions.SSLError as e:
         if "certificate has expired" in str(e):
+            log.warning("Certificate has expired")
             response = requests.get(req_url, verify=False)
         else:
             log.info(str(e))
