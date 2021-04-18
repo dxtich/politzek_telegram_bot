@@ -88,7 +88,10 @@ def get_prisoners_by_friends_count(friends_count=1):
 
 @dp.message_handler(commands=['start', 'help'])
 async def send_welcome(message: types.Message):
-    await message.reply("Выберите или введите количество политзаключенных с минимальным количеством друзей",
+    await message.reply("Бот помогает найти политзаключённых, у которых меньше всего друзей и, соответственно, писем. "
+                        "При нажатии кнопки «5» бот выдает 5 человек с самого конца списка, «10» - 10 человек "
+                        "соответственно по данным сайта Politzek.me\n"
+                        "Выберите или введите количество политзаключенных",
                         reply_markup=keyboard_markup)
 
 
