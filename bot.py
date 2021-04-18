@@ -29,12 +29,20 @@ keyboard_markup.row(*(types.KeyboardButton(text) for text in btns_text))
 
 
 def get_prisoners():
-    response = requests.get("https://politzek.me/api/prisoners?"
-                            "fields[]=name&"
-                            "fields[]=shortName&"
-                            "fields[]=friendsCount&"
-                            "filterByFormula=AND(isVisible, releasedAt='')&"
-                            "sort[0][field]=friendsCount")
+    req_url = "https://politzek.me/api/prisoners?" \
+              "fields[]=name&" \
+              "fields[]=shortName&" \
+              "fields[]=friendsCount&" \
+              "filterByFormula=AND(isVisible, releasedAt='')&" \
+              "sort[0][field]=friendsCount"
+    try:
+        response = requests.get(req_url)
+    except requests.exceptions.SSLError as e:
+        if "certificate has expired" in str(e):
+            response = requests.get(req_url, verify=False)
+        else:
+            log.info(str(e))
+            raise e
     prisoners = response.json()['body']['records']
     return prisoners
 
