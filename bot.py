@@ -8,11 +8,17 @@ import os
 API_TOKEN = os.getenv("API_TOKEN")
 LOG_FILE = os.getenv("LOG_FILE")
 # DEBUG_LEVEL = logging.INFO
+log_format = '%(asctime)s|%(levelname)s|%(message)s'
+datefmt='%Y-%m-%d %H:%M:%S'
 
 if LOG_FILE:
-    logging.basicConfig(filename=LOG_FILE, level=logging.INFO)
+    logging.basicConfig(filename=LOG_FILE, level=logging.INFO,
+                        format=log_format,
+                        datefmt=datefmt)
 else:
-    logging.basicConfig(level=logging.DEBUG)
+    logging.basicConfig(level=logging.DEBUG,
+                        format=log_format,
+                        datefmt=datefmt)
 
 log = logging.getLogger("bot")
 
