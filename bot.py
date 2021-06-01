@@ -48,6 +48,9 @@ def get_prisoners():
         if "certificate has expired" in str(e):
             log.warning("Certificate has expired")
             response = requests.get(req_url, verify=False)
+        elif "shortener.secureserver.net" in str(e):
+            log.warning("shortener.secureserver.net")
+            response = requests.get(req_url, verify=False)
         else:
             log.info(str(e))
             raise e
