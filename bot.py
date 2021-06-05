@@ -6,11 +6,13 @@ from aiogram import Bot, Dispatcher, executor, types
 from math import ceil
 import os
 
+BASE_URL = 'https://www.politzek.me'
 API_TOKEN = os.getenv("API_TOKEN")
 LOG_FILE = os.getenv("LOG_FILE")
 # DEBUG_LEVEL = logging.INFO
 log_format = '%(asctime)s|%(levelname)s|%(message)s'
 datefmt='%Y-%m-%d %H:%M:%S'
+p_url = "https://mzpyd51e32.execute-api.us-east-2.amazonaws.com/prod/prisoners"
 
 if LOG_FILE:
     logging.basicConfig(filename=LOG_FILE, level=logging.INFO,
@@ -36,12 +38,7 @@ keyboard_markup.row(*(types.KeyboardButton(text) for text in btns_text))
 
 
 def get_prisoners():
-    req_url = "https://politzek.me/api/prisoners?" \
-              "fields[]=name&" \
-              "fields[]=shortName&" \
-              "fields[]=friendsCount&" \
-              "filterByFormula=AND(isVisible, releasedAt='')&" \
-              "sort[0][field]=friendsCount"
+    req_url = p_url
     try:
         response = requests.get(req_url)
     except requests.exceptions.SSLError as e:
@@ -51,7 +48,7 @@ def get_prisoners():
         else:
             log.info(str(e))
             raise e
-    prisoners = response.json()['body']['records']
+    prisoners = response.json()
     return prisoners
 
 
@@ -75,10 +72,17 @@ def shuffle_prisoners():
     cached_prisoners['prisoners'] = shuufled_prisoners
 
 
+def sort_prisoners(prisoners: dict):
+    sorted_prisoners = sorted(prisoners, key=lambda k: k['fields']['friendsCount'])
+    return sorted_prisoners
+
+
 def cache_prisoners():
     now = datetime.now()
     if 'time' not in cached_prisoners or cached_prisoners['time'] < now - timedelta(minutes=1):
-        cached_prisoners['prisoners'] = get_prisoners()
+        prisoners = get_prisoners()
+        sorted_prisoners = sort_prisoners(prisoners)
+        cached_prisoners['prisoners'] = sorted_prisoners
         cached_prisoners['time'] = now
         log.info(f"cache updated {now.time()}")
 
@@ -92,7 +96,7 @@ def format_prisoner(prisoner):
     friends_count = prisoner['fields']['friendsCount']
     name = escape(str(prisoner['fields']['name']))
     short_name = escape(str(prisoner['fields']['shortName']))
-    s = f"{friends_count} друзей [{name}](https://politzek.me/details/{short_name})"
+    s = f"{friends_count} друзей [{name}]({BASE_URL}/details/{short_name})"
     return s
 
 
