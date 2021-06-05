@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 from aiogram import Bot, Dispatcher, executor, types
 from math import ceil
 import os
+import re
 
 BASE_URL = 'https://www.politzek.me'
 API_TOKEN = os.getenv("API_TOKEN")
@@ -38,13 +39,19 @@ keyboard_markup.row(*(types.KeyboardButton(text) for text in btns_text))
 
 
 def get_prisoners():
-    req_url = p_url
     try:
-        response = requests.get(req_url)
+        response = requests.get(p_url)
+    except requests.exceptions.ConnectionError:
+        get_api_url()
+        try:
+            response = requests.get(p_url)
+        except Exception as e:
+            log.warning(str(e))
+            raise e
     except requests.exceptions.SSLError as e:
         if "certificate has expired" in str(e):
             log.warning("Certificate has expired")
-            response = requests.get(req_url, verify=False)
+            response = requests.get(p_url, verify=False)
         else:
             log.info(str(e))
             raise e
@@ -75,6 +82,24 @@ def shuffle_prisoners():
 def sort_prisoners(prisoners: dict):
     sorted_prisoners = sorted(prisoners, key=lambda k: k['fields']['friendsCount'])
     return sorted_prisoners
+
+
+def get_api_url():
+    try:
+        response = requests.get(f"{BASE_URL}/js/index.js")
+        rt = response.text
+        apiBase = re.search('apiBase:"(.+?)"', rt).group(1)
+        global p_url
+        p_url = f"{apiBase}/prisoners"
+        log.info(f"api url updated to: {p_url}")
+    except AttributeError as e:
+        log.warning("not found apiBase")
+        raise e
+    except Exception as e:
+        log.warning(str(e))
+        raise e
+
+
 
 
 def cache_prisoners():
