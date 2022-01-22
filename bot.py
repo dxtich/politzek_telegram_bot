@@ -121,7 +121,7 @@ def format_prisoner(prisoner):
     friends_count = prisoner['fields']['friendsCount']
     name = escape(str(prisoner['fields']['name']))
     short_name = escape(str(prisoner['fields']['shortName']))
-    s = f"{friends_count} друзей [{name}]({BASE_URL}/details/{short_name})"
+    s = f"{friends_count} друзей [{name}]({BASE_URL}/friends/{short_name})"
     return s
 
 
