@@ -7,7 +7,7 @@ from math import ceil
 import os
 import re
 
-BASE_URL = 'https://www.politzek.me'
+BASE_URL = 'https://politzek.me'
 API_TOKEN = os.getenv("API_TOKEN")
 LOG_FILE = os.getenv("LOG_FILE")
 # DEBUG_LEVEL = logging.INFO
