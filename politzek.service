@@ -6,10 +6,9 @@ After=docker.service
 [Service]
 Restart=always
 RestartSec=3
-ExecStart=/usr/bin/docker run -e API_TOKEN=$API_TOKEN --name="politzek_bot" dxtich/politzek
+ExecStart=/usr/bin/docker run --env-file=/etc/politzek --name="politzek_bot" dxtich/politzek
 ExecStop=/usr/bin/docker stop -t 2 politzek_bot
 ExecStopPost=/usr/bin/docker rm -f politzek_bot
-EnvironmentFile=/etc/politzek
 
 [Install]
 WantedBy=multi-user.target
