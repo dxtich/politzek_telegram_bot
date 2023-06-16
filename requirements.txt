@@ -1,16 +1,2 @@
 aiogram
-# aiohttp
-# aiosignal
-# async-timeout
-# attrs
-# Babel
-# certifi
-# charset-normalizer
-# frozenlist
-# idna
-# magic-filter
-# multidict
-# pytz
 requests
-# urllib3
-# yarl
