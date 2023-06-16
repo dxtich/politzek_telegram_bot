@@ -1,5 +1,7 @@
 FROM python:3-alpine
 
+RUN apk update && apk upgrade && \
+    apk add --no-cache gcc
 ENV API_TOKEN='a:b'
 #RUN useradd -U bot
 RUN adduser -D bot
