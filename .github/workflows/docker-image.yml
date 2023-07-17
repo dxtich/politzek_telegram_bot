@@ -4,7 +4,7 @@ on:
   push:
     tags:
       - "v*.*.*"
-    branches: [ "main" ]
+    branches: [ "main", "self-hosted"]
 #  pull_request:
 #    branches: [ "main" ]
 
